@@ -45,9 +45,20 @@ const eventsSoFar$ = events$.pipe(
   )
 );
 
+const removeDisabledSources = ([events, sources]: [
+  MultiSourceNEvent[],
+  string[]
+]) => {
+  return events.reduce((acc, event) => {
+    const newSources = event.sources.filter((s) => sources.includes(s));
+    if (newSources.length === 0) {
+      return acc;
+    }
+    return acc.concat({ event: event.event, sources: newSources });
+  }, [] as MultiSourceNEvent[]);
+};
+
 export const selectedEvents$ = eventsSoFar$.pipe(
   combineLatestWith(selectedSources$),
-  map(([events, sources]) =>
-    events.filter((event) => event.sources.some((s) => sources.includes(s)))
-  )
+  map(removeDisabledSources)
 );
