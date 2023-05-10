@@ -20,7 +20,7 @@ const Posts: FC<{}> = ({}) => {
   return (
     <div className={"overflow-auto py-8 h-full"} ref={ref}>
       <div className="container px-4 py-4 mx-auto space-y-8 sm:space-y-6 sm:pl-10">
-        {posts.map(({ event, sources }) => (
+        {posts.slice(-500).map(({ event, sources }) => (
           <div
             key={event.id + event.pubkey + event.created_at}
             className={itemProps.className}

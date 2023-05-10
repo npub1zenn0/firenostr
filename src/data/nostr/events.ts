@@ -37,9 +37,7 @@ const eventsSoFar$ = events$.pipe(
       // Drop existing, put in new one.
       acc.filter((e) => e.event.id !== event.event.id).concat(event),
     [] as MultiSourceNEvent[]
-  ),
-  // Trim to 500 most recent events.
-  map((e) => e.slice(-500))
+  )
 );
 
 export const selectedEvents$ = eventsSoFar$.pipe(
