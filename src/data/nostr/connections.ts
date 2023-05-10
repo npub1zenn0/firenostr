@@ -14,26 +14,19 @@ type NSub = {
   sub: Sub;
 };
 
-const relays = [] as Relay[];
-const subs = [] as NSub[];
+const relays = {} as Record<string, Relay>;
+const subs = {} as Record<string, NSub>;
 
 const now = () => Math.floor(Date.now() / 1000);
 
-export const addSubscription = (source: string) => {
-  if (subs.some((s) => s.source === source)) {
-    return;
-  }
-  const relay = relayInit(source);
-  relays.push(relay);
-  console.log("Connecting to relay", source);
-  relay.connect();
+const subscribe = (relay: Relay) => {
   const sub = relay.sub([
     {
       kinds: [1],
       since: now(),
     },
   ]);
-  subs.push({ sub, source });
+  subs[relay.url] = { sub, source: relay.url };
   sub.on("event", (event) =>
     rawEvents$.next({
       event,
@@ -42,8 +35,25 @@ export const addSubscription = (source: string) => {
   );
 };
 
+export const addSubscription = (source: string) => {
+  if (subs[source]) {
+    return;
+  }
+  const relay = relayInit(source);
+  relays[relay.url] = relay;
+  console.log("Connecting to relay", source);
+  relay.connect();
+  relay.on("disconnect", () => {
+    console.log("Reconnecting", relay.url);
+    relay.connect();
+    subs[relay.url].sub.unsub();
+    subscribe(relay);
+  });
+  subscribe(relay);
+};
+
 export const getEvent = (_filter: Filter) =>
-  race(relays.map((s) => from(s.get(_filter)))).pipe(
+  race(Object.values(relays).map((s) => from(s.get(_filter)))).pipe(
     filter(Boolean),
     take(1)
     //
