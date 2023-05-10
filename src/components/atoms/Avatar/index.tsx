@@ -7,7 +7,13 @@ const Avatar: FC<{ src: string; dimensions: number }> = ({
 }) => (
   <div className="avatar">
     <div className="w-8 sm:w-12 rounded-full">
-      <Image src={src} alt="" width={dimensions} height={dimensions} />
+      <Image
+        unoptimized
+        src={src}
+        alt=""
+        width={dimensions}
+        height={dimensions}
+      />
     </div>
   </div>
 );
