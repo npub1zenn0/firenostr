@@ -1,5 +1,5 @@
 import { Event } from "nostr-tools";
-import { scan, distinct, map, withLatestFrom, combineLatestWith } from "rxjs";
+import { scan, map, withLatestFrom, combineLatestWith } from "rxjs";
 import { rawEvents$ } from "./connections";
 import { selectedSources$ } from "./sources";
 
@@ -13,17 +13,13 @@ const eventSources$ = rawEvents$.pipe(
   )
 );
 
-const uniqueEvents$ = rawEvents$.pipe(
-  distinct((v) => v.event.id),
-  map((e) => e.event)
-);
-
 export type MultiSourceNEvent = {
   sources: string[];
   event: Event;
 };
 
-const events$ = uniqueEvents$.pipe(
+const events$ = rawEvents$.pipe(
+  map((e) => e.event),
   withLatestFrom(eventSources$),
   map(([event, sources]) => ({
     event,
@@ -31,11 +27,20 @@ const events$ = uniqueEvents$.pipe(
   }))
 );
 
+const replaceOrAppend =
+  <T>(predicate: (e: T) => boolean, newElement: T) =>
+  (arr: T[]) => {
+    const idx = arr.findIndex(predicate);
+    if (idx === -1) {
+      return arr.concat(newElement);
+    }
+    return [...arr.slice(0, idx), newElement, ...arr.slice(idx + 1)];
+  };
+
 const eventsSoFar$ = events$.pipe(
   scan(
     (acc, event) =>
-      // Drop existing, put in new one.
-      acc.filter((e) => e.event.id !== event.event.id).concat(event),
+      replaceOrAppend((e) => e.event.id === event.event.id, event)(acc),
     [] as MultiSourceNEvent[]
   )
 );
