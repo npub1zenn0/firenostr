@@ -16,7 +16,14 @@ const Sidebar: FC<{ className?: string }> = ({ className }) => (
             FireNostr 🔥
           </Link>
         </h2>
-        <p className="text-sm">A stream of events from nostr.</p>
+        <p className="text-sm">
+          A stream of events from nostr. Open source on{" "}
+          <a href="https://github.com/npub1zenn0/firenostr" target="_blank">
+            GitHub
+            <ExternalLinkIcon className="h-4 w-4 inline pl-1" />
+          </a>
+          .
+        </p>
         <p className="text-sm">
           Connect to different servers by toggling the buttons below.
         </p>
@@ -28,8 +35,11 @@ const Sidebar: FC<{ className?: string }> = ({ className }) => (
             href="https://nostr.how"
             target="_blank"
           >
-            nostr.how{" "}
-            <ExternalLinkIcon className="h-4 w-4 inline" aria-hidden="true" />
+            nostr.how
+            <ExternalLinkIcon
+              className="h-4 w-4 inline pl-1"
+              aria-hidden="true"
+            />
           </a>
           .
         </p>
