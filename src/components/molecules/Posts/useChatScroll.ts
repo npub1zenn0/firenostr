@@ -47,7 +47,7 @@ export const useChatScroll = (itemsCount: number) => {
     ref: ref as any,
     anchorProps: {
       className: "[overflow-anchor:auto] h-px !m-0 !p-0",
-      ref: anchorRef,
+      ref: anchorRef as any,
     },
     itemProps: {
       className: "[overflow-anchor:none]",
