@@ -33,7 +33,7 @@ const Post: FC<{ children?: ReactNode | null; poster: Poster }> = ({
         />
         <Avatar dimensions={100} src={avatarSrc} />
       </div>
-      <p className="overflow-y-auto col-span-2 max-h-80 whitespace-pre-line break-words prose text-ellipsis overflow-x-clip">
+      <p className="overflow-y-auto col-span-2 whitespace-pre-line break-words prose text-ellipsis overflow-x-clip">
         {children}
       </p>
     </div>

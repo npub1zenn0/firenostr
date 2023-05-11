@@ -7,6 +7,7 @@ import { useObservableState } from "observable-hooks";
 import { initializeRelays } from "@/data/nostr/connections";
 import ScrollToEnd from "./ScrollToEnd";
 import { selectedEvents$ } from "@/data/nostr/events";
+import ReadMore from "@/components/atoms/ReadMore";
 
 const Posts: FC<{}> = ({}) => {
   const posts = useObservableState(selectedEvents$, []);
@@ -16,6 +17,8 @@ const Posts: FC<{}> = ({}) => {
   useEffect(() => {
     initializeRelays();
   }, []);
+
+  const contentMaxLength = 225;
 
   return (
     <div className={"overflow-auto py-8 h-full"} ref={ref}>
@@ -31,7 +34,11 @@ const Posts: FC<{}> = ({}) => {
                 sources,
               }}
             >
-              {event.content}
+              <ReadMore
+                className="underline text-info"
+                content={event.content}
+                maxLength={contentMaxLength}
+              />
             </Post>
           </div>
         ))}
