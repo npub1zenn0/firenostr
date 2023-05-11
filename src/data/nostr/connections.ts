@@ -69,6 +69,10 @@ export const initializeRelays = () => {
     sources.forEach((source) => addSubscription(source))
   );
 
+  const url = new URL(window.location.href);
+  const sources = url.searchParams.getAll("sources[]");
+  sources.forEach((r) => addSource(`wss://${r}`, true));
+
   // Stored in localStorage.
   try {
     const ls = localStorage.getItem("selectedSources$");
